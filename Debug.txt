@@ -1,0 +1,23 @@
+Bug 1: 
+emptySet_testIsEmpty failed
+set a breakpoint at line 111 emptySet_testIsEmpty call
+stepped into ArraySet constructor and confirmed it looked good
+In the isEmpty method returned true if rear > 0, if rear > 0 it would have been populated and not empty
+In line 40 I fixed this by returning true if rear == 0
+re-ran tests and emptySet_testIsEmpty is passing
+
+Bug 2:
+emptySet_addA_A_testIsEmpty is failing
+In line 147 I placed a breakpoint emptySet_addA_A_testIsEmpty call
+In the add method of ArraySet it assigned the rear a value however rear wasn't updated
+I fixed this by adding line 60, incrementing rear
+re-ran tests and emptySet_addA_A_testIsEmpty is passing
+
+Bug 3:
+A_addB_AB_testRemoveA is failing
+set a breakpoint at line 265 A_addB_AB_testRemoveA called
+In line 74 of ArraySet it in the remove method a while loop shifting the index to account for the removed index was causing an out of bound error
+The while loop was going to the previous rear, not accounting for the removed index
+I fixed this in line 74 by setting the while loop to run while i < rear - 1
+re-ran tests and A_addB_AB_testRemoveA was passing
+all tests are passing
