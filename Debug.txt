@@ -1,24 +1,33 @@
 Bug 1: 
-The first bug I encountered is when emptySet_testIsEmpty failed.
-To start solving this I set a breakpoint at line 111 in SetTester.java where emptySet_testIsEmpty is called.
-First I stepped into ArraySet constructor and confirmed it looked good.
-Then I stepped into ArraySet isEmpty method. I then found isEmpty returned true if rear > 0. If rear > 0 it would have been populated and not empty.
+The first bug I encountered was when emptySet_testIsEmpty failed.
+To start solving this I set a breakpoint at line 111 in SetTester where emptySet_testIsEmpty was called.
+First I stepped into the ArraySet constructor and confirmed it looked good.
+Then I stepped into ArraySet isEmpty method. This method was causing the fail directly after it execcuted. 
+After looking closer at isEmpty I found that it was returning true despite the set being empty.
+I then found that isEmpty returned true if rear > 0. If rear > 0 the array would have been populated and not empty.
 In line 40 I fixed this by returning true if rear == 0.
 Then I re-ran tests and emptySet_testIsEmpty is passing.
 
 Bug 2:
 The second bug I identified was when emptySet_addA_A_testIsEmpty failed.
-In line 147 of SetTester I placed a breakpoint where emptySet_addA_A_testIsEmpty is called.
-I then stepped into ArraySet's add method. After the new element was assigned to the rear position it was successfully added. 
-However the rear value was never reassigned.
-I fixed this by adding line 60, incrementing rear to the next value in the array.
-After this fix I re-ran SetTester and emptySet_addA_A_testIsEmpty is passing.
+In line 147 of SetTester I placed a breakpoint where emptySet_addA_A_testIsEmpty was called. 
+I then stepped into ArraySet and the constructor was working perfectly. Eventually I reached the add method. 
+The contains method that was called within add was working properly, allowing add to proceed adding the element to the empty set. 
+Then the new element was being added was assigned to the rear position successfully. 
+I checked this by viewing the content of the array after it was added. 
+After the method extended the capacity and assigned A to the rear, the rear value was never reassigned.
+Ultimately the rear position staying 0 caused isEmpty to return true, making the test to fail.
+I fixed this by adding line 60 by incrementing rear to the next value in the array.
+After this fix I re-ran SetTester and emptySet_addA_A_testIsEmpty was passing.
 
 Bug 3:
 The final bug I found was when A_addB_AB_testRemoveA failed.
-First I set a breakpoint at line 265 in SetTester where A_addB_AB_testRemoveA is called.
-Then I stepped into ArraySet's remove method. Remove was successfully finding and removing the character.
-In line 74 of ArraySet it in the remove method a while loop shifting the index to account for the removed index was causing an out of bound error in the array.
-The while loop was going to the previous rear, not accounting for the removed index.
-I fixed this in line 74 by setting the while loop to run while i < rear - 1.
-I then re-ran tests and A_addB_AB_testRemoveA was passing along with everything else in SetTester.
+First I set a breakpoint at line 265 in SetTester where A_addB_AB_testRemoveA was called.
+I stepped into ArraySet where A and B were successfully added. Then I stepped into ArraySet's remove method.
+Remove was successfully finding and removing the character.
+In line 74 of ArraySet a while loop was shifting the position of each item in the array to account for the removed index.
+This was causing an out of ArrayIndexOutOfBoundsbound error.
+After closer look at the loop I found it was reapeating to the previous rear, that no longer exsisted.
+By not accounting for the removed index it ended up going one past the anticipated rear in the array, causing the ArrayIndexOutOfBoundsbound error.
+I fixed this in line 74 by setting the while loop shifting the array to run while i < rear - 1. 
+After this fix I re-ran tests A_addB_AB_testRemoveA was passing along with everything else in SetTester.
